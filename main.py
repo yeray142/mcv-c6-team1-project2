@@ -153,25 +153,22 @@ def main(args):
     model.load(torch.load(os.path.join(ckpt_dir, 'checkpoint_best.pt')))
 
     # Evaluation on test split
-    accuracies, precisions, recalls, f1s  = evaluate(model, test_data, classes, threshold = 0.5)
-
+    auc_roc  = evaluate(model, test_data)
+    
     # Percentage
-    accuracies = accuracies * 100
-    precisions = precisions * 100
-    recalls = recalls * 100
-    f1s = f1s * 100
+    auc_roc = auc_roc * 100
 
     # Report results per-class in table
     table = []
     for i, class_name in enumerate(classes.keys()):
-        table.append([class_name, f"{accuracies[i]:.2f}", f"{precisions[i]:.2f}", f"{recalls[i]:.2f}", f"{f1s[i]:.2f}"])
+        table.append([class_name, f"{auc_roc[i]:.2f}"])
 
-    headers = ["Class", "Accuracy", "Precision", "Recall", "F1"]
+    headers = ["Class", "AUC-ROC"]
     print(tabulate(table, headers, tablefmt="grid"))
 
     # Report average results in table
-    avg_table = [["Average", f"{np.mean(accuracies):.2f}", f"{np.mean(precisions):.2f}", f"{np.mean(recalls):.2f}", f"{np.mean(f1s):.2f}"]]
-    headers = ["", "Accuracy", "Precision", "Recall", "F1"]
+    avg_table = [["Average", f"{np.mean(auc_roc):.2f}"]]
+    headers = ["", "AUC-ROC"]
 
     print(tabulate(avg_table, headers, tablefmt="grid"))
     
