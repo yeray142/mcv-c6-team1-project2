@@ -6,7 +6,7 @@ File containing main evaluation functions
 import numpy as np
 from tqdm import tqdm
 from torch.utils.data import DataLoader
-from sklearn.metrics import roc_auc_score
+from sklearn.metrics import average_precision_score
 
 #Local imports
 
@@ -36,6 +36,6 @@ def evaluate(model, dataset):
 
     scores = np.concatenate(scores, axis = 0)
     labels = np.concatenate(labels, axis = 0)
-    score = roc_auc_score(labels, scores, average = None)
+    score = average_precision_score(labels, scores, average = None)
 
     return score

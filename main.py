@@ -163,12 +163,12 @@ def main(args):
     for i, class_name in enumerate(classes.keys()):
         table.append([class_name, f"{auc_roc[i]:.2f}"])
 
-    headers = ["Class", "AUC-ROC"]
+    headers = ["Class", "Average Precision"]
     print(tabulate(table, headers, tablefmt="grid"))
 
     # Report average results in table
     avg_table = [["Average", f"{np.mean(auc_roc):.2f}"]]
-    headers = ["", "AUC-ROC"]
+    headers = ["", "Average Precision"]
 
     print(tabulate(avg_table, headers, tablefmt="grid"))
     
