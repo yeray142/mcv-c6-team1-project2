@@ -25,7 +25,7 @@ Refer to the README files in the [data](/data/) directory for pre-processing and
 The `main.py` file is designed to train and evaluate the baseline based on the settings specified in the chosen configuration file. You can execute the file using the following command:
 
 ```
-python3 train_tdeed.py --model <model_name>
+python3 main.py --model <model_name>
 ```
 
 Here, `<model_name>` can be chosen freely but must match the name specified in the configuration file located in the config directory.
@@ -33,7 +33,7 @@ Here, `<model_name>` can be chosen freely but must match the name specified in t
 For example, to use the provided baseline configuration, you would run:
 
 ```
-python3 train_tdeed.py --model baseline
+python3 main.py --model baseline
 ```
 
 You can control whether to train the whole model or just evaluate it using the `only_test` parameter in the configuration file. For additional details on configuration options, refer to the README in the [config](/config/) directory.
