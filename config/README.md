@@ -1,6 +1,6 @@
 # Setting up the Configurations
 
-Here we describe the different parameters set in each configuration file:
+Here we describe the different parameters set in the baseline configuration file:
 
 - _frame_dir:_ Directory where frames are stored.
 - _save_dir:_ Directory to save checkpoints, dataset information, etc.
@@ -18,3 +18,5 @@ Here we describe the different parameters set in each configuration file:
 - _warm_up_epochs:_ Number of warm-up epochs.
 - _only_test:_ Boolean indicating if only inference is performed or training + inference.
 - _num_workers:_ Number of workers.
+
+You are free to create new configurations and add the necessary parameters once you modify the baseline.
