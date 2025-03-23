@@ -17,7 +17,7 @@ pip install -r requirements.txt
 
 ## Data
 
-Refer to the README files in the [data](/data/) directory for pre-processing and setup instructions. 
+Refer to the README files in the [data/soccernetball](/data/soccernetball) directory for pre-processing and setup instructions. 
 
 
 ## Execution
