@@ -5,6 +5,9 @@
 
 This repository provides a baseline on the task of action classification on the SoccerNet Ball Action Spotting dataset. 
 
+## Data
+
+Refer to the README files in the [data/soccernetball](/data/soccernetball) directory for pre-processing and setup instructions. 
 
 
 ## Environment
@@ -14,10 +17,6 @@ You can install the required packages for the project using the following comman
 ```
 pip install -r requirements.txt
 ```
-
-## Data
-
-Refer to the README files in the [data/soccernetball](/data/soccernetball) directory for pre-processing and setup instructions. 
 
 
 ## Execution
