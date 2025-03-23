@@ -20,7 +20,7 @@ Frames will be extracted at a resolution of **398x224**, and the folder and fram
 
 
 ```
-data-folder
+<out_dir>
 └───england_efl
     └───2019-2020
         └───2019-10-01 - Blackburn Rovers - Nottingham Forest
