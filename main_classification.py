@@ -63,7 +63,7 @@ def get_lr_scheduler(args, optimizer, num_steps_per_epoch):
 
 
 def main(args):
-    #Set seed
+    # Set seed
     print('Setting seed to: ', args.seed)
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
@@ -81,7 +81,7 @@ def main(args):
     classes, train_data, val_data, test_data = get_datasets(args)
 
     if args.store_mode == 'store':
-        print('Datasets have been stored correctly! Stop training here and rerun.')
+        print('Datasets have been stored correctly! Re-run changing "mode" to "load" in the config JSON.')
         sys.exit('Datasets have correctly been stored! Stop training here and rerun with load mode.')
     else:
         print('Datasets have been loaded from previous versions correctly!')
@@ -141,40 +141,32 @@ def main(args):
 
             if args.save_dir is not None:
                 os.makedirs(args.save_dir, exist_ok=True)
-                store_json(os.path.join(args.save_dir, 'loss.json'), losses,
-                            pretty=True)
+                store_json(os.path.join(args.save_dir, 'loss.json'), losses, pretty=True)
 
                 if better:
-                    torch.save(
-                        model.state_dict(),
-                        os.path.join(ckpt_dir, 'checkpoint_best.pt'))
+                    torch.save( model.state_dict(), os.path.join(ckpt_dir, 'checkpoint_best.pt') )
 
     print('START INFERENCE')
     model.load(torch.load(os.path.join(ckpt_dir, 'checkpoint_best.pt')))
 
     # Evaluation on test split
-    auc_roc  = evaluate(model, test_data)
-    
-    # Percentage
-    auc_roc = auc_roc * 100
+    ap_score = evaluate(model, test_data)
 
     # Report results per-class in table
     table = []
     for i, class_name in enumerate(classes.keys()):
-        table.append([class_name, f"{auc_roc[i]:.2f}"])
+        table.append([class_name, f"{ap_score[i]*100:.2f}"])
 
     headers = ["Class", "Average Precision"]
     print(tabulate(table, headers, tablefmt="grid"))
 
     # Report average results in table
-    avg_table = [["Average", f"{np.mean(auc_roc):.2f}"]]
+    avg_table = [["Average", f"{np.mean(ap_score)*100:.2f}"]]
     headers = ["", "Average Precision"]
 
     print(tabulate(avg_table, headers, tablefmt="grid"))
     
     print('CORRECTLY FINISHED TRAINING AND INFERENCE')
-
-
 
 
 if __name__ == '__main__':

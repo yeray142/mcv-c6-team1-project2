@@ -96,13 +96,16 @@ class Model(BaseRGBModel):
             print('Model params:',
                 sum(p.numel() for p in self.parameters()))
 
-    def __init__(self, device='cuda', args=None):
-        self.device = device
+    def __init__(self, args=None):
+        self.device = "cpu"
+        if torch.cuda.is_available() and ("device" in args) and (args.device == "cuda"):
+            self.device = "cuda"
+
         self._model = Model.Impl(args=args)
         self._model.print_stats()
         self._args = args
 
-        self._model.to(device)
+        self._model.to(self.device)
         if args.task == 'spotting':
             self._num_classes = args.num_classes + 1
         elif args.task == 'classification':
