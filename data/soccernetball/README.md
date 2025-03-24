@@ -9,8 +9,8 @@ Once downloaded, you can extract frames and generate the desired folder structur
 
 
 ```
-python extract_frames_snb.py --video_dir video_dir
-        --out_dir out_dir
+python extract_frames_snb.py --video_dir <video_dir>
+        --out_dir <out_dir>
         --sample_fps 25 --num_workers 5
 ```
 
