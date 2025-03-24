@@ -17,9 +17,9 @@ from tabulate import tabulate
 
 #Local imports
 from util.io import load_json, store_json
-from util.eval import evaluate
+from util.eval_classification import evaluate
 from dataset.datasets import get_datasets
-from model.model import Model
+from model.model_classification import Model
 
 
 def get_args():
@@ -93,12 +93,16 @@ def main(args):
     train_loader = DataLoader(
         train_data, shuffle=False, batch_size=args.batch_size,
         pin_memory=True, num_workers=args.num_workers,
-        prefetch_factor=2, worker_init_fn=worker_init_fn)
+        prefetch_factor=(2 if args.num_workers > 0 else None),
+        worker_init_fn=worker_init_fn
+    )
         
     val_loader = DataLoader(
         val_data, shuffle=False, batch_size=args.batch_size,
         pin_memory=True, num_workers=args.num_workers,
-        prefetch_factor=2, worker_init_fn=worker_init_fn)
+        prefetch_factor=(2 if args.num_workers > 0 else None),
+        worker_init_fn=worker_init_fn
+    )
 
     # Model
     model = Model(args=args)

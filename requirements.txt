@@ -10,4 +10,3 @@ opencv-contrib-python==4.11.0.86
 tqdm==4.66.4
 moviepy==1.0.3
 huggingface_hub[cli]==0.29.3
-dill

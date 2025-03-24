@@ -17,8 +17,8 @@ def get_datasets(args):
     classes = load_classes(os.path.join('data', args.dataset, 'class.txt'))
 
     dataset_len = args.epoch_num_frames // args.clip_len
-    stride = STRIDE_SNB
-    overlap = OVERLAP
+    stride = args.stride if "stride" in args else STRIDE_SNB
+    overlap = args.overlap if "overlap" in args else OVERLAP
 
     dataset_kwargs = {
         'stride': stride, 'overlap': overlap, 'dataset': args.dataset, 'labels_dir': args.labels_dir, 'task': args.task,

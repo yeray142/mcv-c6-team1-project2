@@ -1,11 +1,12 @@
 {
-    "frame_dir": "/dir-to-frame",
-    "save_dir": "/dir-to-save",
-    "labels_dir": "/dir-to-labels",
-    "store_mode": "load",
+    "frame_dir": "/Users/aclapes/Data/SoccerNet/SN-BAS-2025-frames",
+    "save_dir": "/Users/aclapes/Data",
+    "labels_dir": "/Users/aclapes/Data/SoccerNet/SN-BAS-2025",
+    "store_mode": "store",
     "task": "classification",
     "batch_size": 4,
     "clip_len": 50,
+    "stride": 2,
     "dataset": "soccernetball",
     "epoch_num_frames": 500000,
     "feature_arch": "rny002",
@@ -14,5 +15,6 @@
     "num_epochs": 35,
     "warm_up_epochs": 3,
     "only_test": false,
-    "num_workers": 4
+    "device": "cpu",
+    "num_workers": 0
 }
