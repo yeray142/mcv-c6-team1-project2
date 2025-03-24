@@ -9,8 +9,8 @@ Once downloaded, you can extract frames and generate the desired folder structur
 
 
 ```
-python extract_frames_snb.py --video_dir video_dir
-        --out_dir out_dir
+python extract_frames_snb.py --video_dir <video_dir>
+        --out_dir <out_dir>
         --sample_fps 25 --num_workers 5
 ```
 
@@ -21,16 +21,17 @@ Frames will be extracted at a resolution of **398x224**, and the folder and fram
 
 ```
 <out_dir>
-└───england_efl
-    └───2019-2020
-        └───2019-10-01 - Blackburn Rovers - Nottingham Forest
-            └───frame0.jpg
-            └───frame1.jpg
-            └───...
-        └───2019-10-01 - Brentford - Bristol City
-            └───frame0.jpg
-            └───frame1.jpg
-            └───...
+└───224
+    └───england_efl
+        └───2019-2020
+            └───2019-10-01 - Blackburn Rovers - Nottingham Forest
+                └───frame0.jpg
+                └───frame1.jpg
+                └───...
+            └───2019-10-01 - Brentford - Bristol City
+                └───frame0.jpg
+                └───frame1.jpg
+                └───...
 ```
 
 ---
