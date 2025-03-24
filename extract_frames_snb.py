@@ -39,7 +39,7 @@ def get_duration(video_path):
 
 
 def worker(args):
-    video_name, video_path, out_dir, sample_fps = args
+    video_name, video_path, out_dir, sample_fps, recalc_fps = args
 
     def get_stride(src_fps):
         if sample_fps <= 0:
@@ -105,7 +105,7 @@ def worker(args):
                 break
 
             if i % stride == 0:
-                if not RECALC_FPS_ONLY:
+                if not recalc_fps:
                     if frame.shape[0] != oh or frame.shape[1] != ow:
                         frame = cv2.resize(frame, (ow, oh))
                     if out_dir is not None:
@@ -129,18 +129,22 @@ def main(args):
     recalc_fps = args.recalc_fps
     num_workers = args.num_workers
 
-    global RECALC_FPS_ONLY
-    RECALC_FPS_ONLY = recalc_fps
+    # global RECALC_FPS_ONLY
+    # RECALC_FPS_ONLY = recalc_fps
 
     worker_args = []
     for league in os.listdir(video_dir):
-        if '.zip' in league:
-            continue
         league_dir = os.path.join(video_dir, league)
+        if os.path.isfile(league_dir) or league == "ExtraLabelsActionSpotting500games":
+            continue
         for season in os.listdir(league_dir):
             season_dir = os.path.join(league_dir, season)
+            if os.path.isfile(season_dir):
+                continue
             for game in os.listdir(season_dir):
                 game_dir = os.path.join(season_dir, game)
+                if os.path.isfile(game_dir):
+                    continue
                 for video_file in os.listdir(game_dir):
                     if (video_file.endswith('720p.mp4') | video_file.endswith('720p.mkv')): # Only 720p videos
                         worker_args.append((
@@ -149,7 +153,8 @@ def main(args):
                             os.path.join(
                                 out_dir, league, season, game
                             ) if out_dir else None,
-                            sample_fps
+                            sample_fps,
+                            recalc_fps
                         ))
 
     with Pool(num_workers) as p:
