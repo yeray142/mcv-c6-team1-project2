@@ -16,7 +16,7 @@ Here we describe the different parameters set in the baseline configuration file
 - _num_classes:_ Number of classes for the current dataset.
 - _num_epochs:_ Number of epochs for training.
 - _warm_up_epochs:_ Number of warm-up epochs.
-- _only_test:_ Boolean indicating if only inference is performed or training + inference.
+- _only_test:_ Boolean indicating whether only inference or training + inference.
 - _num_workers:_ Number of workers.
 
 You are free to create new configurations and add the necessary parameters once you modify the baseline.

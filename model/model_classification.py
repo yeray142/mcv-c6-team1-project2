@@ -106,10 +106,7 @@ class Model(BaseRGBModel):
         self._args = args
 
         self._model.to(self.device)
-        if args.task == 'spotting':
-            self._num_classes = args.num_classes + 1
-        elif args.task == 'classification':
-            self._num_classes = args.num_classes
+        self._num_classes = args.num_classes
 
     def epoch(self, loader, optimizer=None, scaler=None, lr_scheduler=None):
 
@@ -130,17 +127,7 @@ class Model(BaseRGBModel):
 
                 with torch.cuda.amp.autocast():
                     pred = self._model(frame)
-
-                    loss = 0.
-                    
-                    if self._args.task == 'spotting':
-                        predictions = pred.reshape(-1, self._num_classes)
-
-                        loss += F.cross_entropy(
-                            predictions, label)
-
-                    elif self._args.task == 'classification':
-                        loss += F.binary_cross_entropy_with_logits(
+                    loss = F.binary_cross_entropy_with_logits(
                             pred, label)
 
                 if optimizer is not None:
