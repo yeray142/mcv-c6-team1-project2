@@ -15,6 +15,6 @@
     "num_epochs": 35,
     "warm_up_epochs": 3,
     "only_test": false,
-    "device": "cpu",
-    "num_workers": 0
+    "device": "cuda",
+    "num_workers": 4
 }
