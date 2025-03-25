@@ -154,7 +154,6 @@ class Model(BaseRGBModel):
                 pred = self._model(seq)
 
             # apply sigmoid
-            if self._args.task == 'classification':
-                pred = torch.sigmoid(pred)
+            pred = torch.sigmoid(pred)
             
             return pred.cpu().numpy()
