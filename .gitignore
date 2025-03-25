@@ -1,3 +1,5 @@
 .idea/
 .venv/
-.config/baseline.json
+__pycache__/
+*.pyc
+*.pyo
