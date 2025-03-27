@@ -1,5 +1,5 @@
-# Project 2 (Task 1) @ C6 - Video Analysis
 ### Master in Computer Vision (Barcelona) 2024/25
+# Project 2 (Task 1) @ C6 - Video Analysis
 
 This repository provides the starter code for Task 1 of Project 2: Action classification on the SoccerNet Ball Action Spotting 2025 (SN-BAS-2025) dataset.
 
