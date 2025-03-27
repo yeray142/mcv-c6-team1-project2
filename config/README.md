@@ -19,4 +19,4 @@ Here we describe the different parameters set in the baseline configuration file
 - _only_test:_ Boolean indicating whether only inference or training + inference.
 - _num_workers:_ Number of workers.
 
-You are free to create new configurations and add the necessary parameters once you modify the baseline.
+You are free to create new configurations and add the necessary parameters once you modify the baseline. At the very least, you'll need to modify `frame_dir`, `save_dir`, and `labels_dir` as they are set to work in our own computation servers. 
