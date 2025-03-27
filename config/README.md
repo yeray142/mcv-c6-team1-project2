@@ -12,7 +12,7 @@ Here we describe the different parameters set in the baseline configuration file
 - _stride:_ Sampling one out of every _stride_ frames when reading from _frame_dir_.
 - _dataset:_ Name of the dataset ('soccernetball').
 - _epoch_num_frames:_ Number of frames used per epoch.
-- _feature_arch:_ Feature extractor architecture ('rny002_gsf' or 'rny008_gsf').
+- _feature_arch:_ Feature extractor architecture (e.g. 'rny002_gsf', 'rny004', or 'rny008_gsf' from `timm` library). Check `model/model_classification.py` to see accepted models at this points. Of course, you can choose to change them to other models or use your own.
 - _learning_rate:_ Learning rate.
 - _num_classes:_ Number of classes for the current dataset.
 - _num_epochs:_ Number of epochs for training.
