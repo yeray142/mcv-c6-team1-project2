@@ -3,3 +3,11 @@
 __pycache__/
 *.pyc
 *.pyo
+
+# Cluster logs
+*.out
+*.err
+job_*
+
+# Data
+data/

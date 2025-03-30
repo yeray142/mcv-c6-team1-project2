@@ -6,7 +6,6 @@ File containing the different modules related to the model: T-DEED.
 import abc
 import torch
 import torch.nn as nn
-import math
 
 #Local imports
 

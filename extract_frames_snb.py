@@ -23,6 +23,10 @@ DEFAULT_SAMPLE_FPS = 25
 DEFAULT_HEIGHT = 224
 DEFAULT_WIDTH = 398
 
+# Define global variables with height and width
+global height
+global width
+
 
 def get_args():
     parser = argparse.ArgumentParser()
@@ -35,6 +39,7 @@ def get_args():
     parser.add_argument('--recalc_fps', action='store_true') # Debug option
     parser.add_argument('-j', '--num_workers', type=int,
                         default=os.cpu_count() // 4)
+    return parser.parse_args()
 
 
 def get_duration(video_path):
@@ -59,14 +64,15 @@ def worker(args):
     w = int(vc.get(cv2.CAP_PROP_FRAME_WIDTH))
     h = int(vc.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-    oh = args.height
-    ow = args.width
+    oh = height
+    ow = width
 
     time_in_s = get_duration(video_path)
 
     fps_path = None
     if out_dir is not None:
         fps_path = os.path.join(out_dir, 'fps.txt')
+        print(f"fps_path: {fps_path}")
         if os.path.exists(fps_path):
             print('Already done:', video_name)
             vc.release()
@@ -166,5 +172,7 @@ def main(args):
 
 if __name__ == '__main__':
     args = get_args()
-    args.out_dir = os.path.join(args.out_dir, f"{args.width}x{args.height}")
+    width = args.width
+    height = args.height
+    args.out_dir = os.path.join(args.out_dir, f"{width}x{height}")
     main(args)

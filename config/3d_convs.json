@@ -9,7 +9,7 @@
     "stride": 2,
     "dataset": "soccernetball",
     "epoch_num_frames": 500000,
-    "feature_arch": "rny002",
+    "feature_arch": "3dresnet",
     "learning_rate": 0.0008,
     "num_classes": 12,
     "num_epochs": 15,

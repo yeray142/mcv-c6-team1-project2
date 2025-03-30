@@ -1,9 +1,5 @@
 """
 File containing the main model.
-
-Changes in this file:
-- This model uses Transformers for temporal feature extraction.
-- Adds multihead attention to process the Transformers output.
 """
 
 #Standard imports
@@ -41,23 +37,6 @@ class Model(BaseRGBModel):
                 raise NotImplementedError(args._feature_arch)
 
             self._features = features
-            
-            # Remove LSTM and replace with Transformer (new code)
-            self._transformer = nn.TransformerEncoder(
-                nn.TransformerEncoderLayer(
-                    d_model=self._d,    # Must match backbone's feature dimension
-                    nhead=8,           # Number of attention heads
-                    batch_first=True   # Maintains (B, T, D) input format
-                ),
-                num_layers=2           # Number of transformer blocks
-            )
-            
-            # Add attention layer (new code)
-            self.attention_layer = nn.MultiheadAttention(
-                embed_dim=self._d,  # Matches Transformers's output dimension
-                num_heads=4,        # 4 attention heads
-                batch_first=True
-            )
 
             # MLP for classification
             self._fc = FCLayers(self._d, args.num_classes)
@@ -79,31 +58,23 @@ class Model(BaseRGBModel):
 
         def forward(self, x):
             x = self.normalize(x) #Normalize to 0-1
-            batch_size, clip_len, channels, height, width = x.shape # B, T, C, H, W
+            batch_size, clip_len, channels, height, width = x.shape #B, T, C, H, W
 
             if self.training:
                 x = self.augment(x) #augmentation per-batch
 
             x = self.standarize(x) #standarization imagenet stats
-            
-            # Feature extraction
+                        
             im_feat = self._features(
                 x.view(-1, channels, height, width)
-            ).reshape(batch_size, clip_len, self._d) # B, T, D
-            
-            # New transformer processing (replaces LSTM+attention)
-            im_feat = self._transformer(im_feat)      # B, T, D
+            ).reshape(batch_size, clip_len, self._d) #B, T, D
 
-            # New attention processing (replaces max pooling)
-            attn_out, _ = self.attention_layer(
-                im_feat,  # query
-                im_feat,  # key 
-                im_feat   # value
-            )
-            im_feat = torch.mean(attn_out, dim=1)  # Average pooled features
+            #Max pooling
+            im_feat = torch.max(im_feat, dim=1)[0] #B, D
 
-            # MLP
-            im_feat = self._fc(im_feat) # B, num_classes
+            #MLP
+            im_feat = self._fc(im_feat) #B, num_classes
+
             return im_feat 
         
         def normalize(self, x):

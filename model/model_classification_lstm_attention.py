@@ -2,8 +2,8 @@
 File containing the main model.
 
 Changes in this file:
-- This model uses Transformers for temporal feature extraction.
-- Adds multihead attention to process the Transformers output.
+- This model uses LSTM for temporal feature extraction.
+- Adds multihead attention to process the LSTM output.
 """
 
 #Standard imports
@@ -42,25 +42,19 @@ class Model(BaseRGBModel):
 
             self._features = features
             
-            # Remove LSTM and replace with Transformer (new code)
-            self._transformer = nn.TransformerEncoder(
-                nn.TransformerEncoderLayer(
-                    d_model=self._d,    # Must match backbone's feature dimension
-                    nhead=8,           # Number of attention heads
-                    batch_first=True   # Maintains (B, T, D) input format
-                ),
-                num_layers=2           # Number of transformer blocks
-            )
+            # Add temporal LSTM (bidirectional improves context) - This is the only change done.
+            self._lstm = nn.LSTM(input_size=self._d, hidden_size=self._d, batch_first=True, num_layers=1, bidirectional=True)
+            lstm_out_dim = self._d * 2  # because of bidirectionality
             
             # Add attention layer (new code)
             self.attention_layer = nn.MultiheadAttention(
-                embed_dim=self._d,  # Matches Transformers's output dimension
-                num_heads=4,        # 4 attention heads
+                embed_dim=lstm_out_dim,  # Matches LSTM's output dimension
+                num_heads=4,            # 4 attention heads
                 batch_first=True
             )
 
             # MLP for classification
-            self._fc = FCLayers(self._d, args.num_classes)
+            self._fc = FCLayers(lstm_out_dim, args.num_classes)
 
             #Augmentations and crop
             self.augmentation = T.Compose([
@@ -85,14 +79,13 @@ class Model(BaseRGBModel):
                 x = self.augment(x) #augmentation per-batch
 
             x = self.standarize(x) #standarization imagenet stats
-            
-            # Feature extraction
+                        
             im_feat = self._features(
                 x.view(-1, channels, height, width)
             ).reshape(batch_size, clip_len, self._d) # B, T, D
             
-            # New transformer processing (replaces LSTM+attention)
-            im_feat = self._transformer(im_feat)      # B, T, D
+            # Pass the sequence through the LSTM
+            im_feat, _ = self._lstm(im_feat)  # output shape: (B, T, 2*_d)
 
             # New attention processing (replaces max pooling)
             attn_out, _ = self.attention_layer(

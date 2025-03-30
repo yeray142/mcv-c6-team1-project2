@@ -4,7 +4,7 @@
     "labels_dir": "/ghome/c5mcv01/mcv-c6-team1-project2/data/soccernetball/SN-BAS-2025",
     "store_mode": "load",
     "task": "classification",
-    "batch_size": 4,
+    "batch_size": 8,
     "clip_len": 50,
     "stride": 2,
     "dataset": "soccernetball",
