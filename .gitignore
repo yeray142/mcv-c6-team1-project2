@@ -11,3 +11,5 @@ job_*
 
 # Data
 data/
+.ipynb_checkpoints/
+jobs/

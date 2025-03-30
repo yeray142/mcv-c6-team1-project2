@@ -19,7 +19,7 @@ from tabulate import tabulate
 from util.io import load_json, store_json
 from util.eval_classification import evaluate
 from dataset.datasets import get_datasets
-from model.model_classification_mvit import Model
+from model.model_classification_3dr18 import Model
 
 
 def get_args():

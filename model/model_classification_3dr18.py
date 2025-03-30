@@ -25,12 +25,17 @@ class Model(BaseRGBModel):
             self._feature_arch = args.feature_arch
 
             # Replace 2D CNN with 3D ResNet (new code)
-            if self._feature_arch.startswith('3dresnet'):
+            if self._feature_arch.startswith('3dresnet') or self._feature_arch.startswith('r3d_18'):
                 self._features = torchvision.models.video.r3d_18(pretrained=True)
-                self._d = 512
-                
-                # Keep spatial dimensions (new code)
-                self._features.fc = FCLayers(self._d, args.num_classes)
+            elif self._feature_arch.startswith('mc3_18'):
+                self._features = torchvision.models.video.mc3_18(pretrained=True)
+            elif self._feature_arch.startswith('r2plus1d_18'):
+                self._features = torchvision.models.video.r2plus1d_18(pretrained=True)
+            
+            self._d = 512
+            
+            # Keep spatial dimensions (new code)
+            self._features.fc = FCLayers(self._d, args.num_classes)
 
             # Update normalization for video models (critical change)
             self.standarization = T.Compose([
