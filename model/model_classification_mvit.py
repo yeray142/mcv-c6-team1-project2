@@ -24,21 +24,30 @@ class Model(BaseRGBModel):
             super().__init__()
             self._feature_arch = args.feature_arch
 
-            # Replace 2D CNN with 3D ResNet (new code)
-            if self._feature_arch.startswith('3dresnet'):
-                self._features = torchvision.models.video.mvit_v2_s(MViT_V2_S_Weights.KINETICS400_V1)
-                self._d = 512
+            # Replace 2D CNN with MViT (v2) (new code)
+            if self._feature_arch.startswith('mvit'):
+                self._features = torchvision.models.video.mvit_v2_s(pretrained=True)
                 
                 # Keep spatial dimensions (new code)
-                self._features.fc = FCLayers(self._d, args.num_classes)
+                self._features.head = nn.Sequential(
+                    nn.Dropout(0.5, inplace=True),
+                    nn.Linear(768, args.num_classes)
+                )
+
+            # Define preprocessing transformations
+            self.preprocess = T.Compose([
+                T.Resize(256, interpolation=T.InterpolationMode.BILINEAR),  # Resize
+                T.CenterCrop((224, 224)),  # Center crop
+            ])
 
             # Update normalization for video models (critical change)
             self.standarization = T.Compose([
-                T.Normalize(mean = (0.43216, 0.394666, 0.37645), 
-                            std = (0.22803, 0.22145, 0.216989)) # Kinetics-400 stats
+                T.Normalize(mean = (0.45, 0.45, 0.45), 
+                            std = (0.225, 0.225, 0.225)) # Kinetics-400 stats
             ])
 
         def forward(self, x):
+            x = self.preprocess_frames(x)  # Apply resizing and cropping
             x = self.normalize(x) #Normalize to 0-1
             batch_size, clip_len, channels, height, width = x.shape # B, T, C, H, W
 
@@ -48,7 +57,7 @@ class Model(BaseRGBModel):
             
             # Reformat input for 3D CNN: (B,T,C,H,W) -> (B,C,T,H,W)
             x = x.permute(0, 2, 1, 3, 4)
-                        
+        
             # 3D CNN processing (replaces 2D CNN + LSTM)
             im_feat = self._features(x)  # Output shape: (B, 512, T', H', W')
             return im_feat
@@ -84,6 +93,14 @@ class Model(BaseRGBModel):
         def standarize(self, x):
             for i in range(x.shape[0]):
                 x[i] = self.standarization(x[i])
+            return x
+
+        def preprocess_frames(self, x):
+            # Apply resizing and cropping frame-wise, ensuring proper shape
+            B, T, C, H, W = x.shape
+            x = x.view(B * T, C, H, W)  # Flatten batch and temporal dimensions
+            x = torch.stack([self.preprocess(frame) for frame in x])  # Apply transforms
+            x = x.view(B, T, C, 224, 224)  # Reshape back to original format
             return x
 
         def print_stats(self):
