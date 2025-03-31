@@ -1,7 +1,7 @@
 """
 File containing the main model.
 
-- This model uses a 3D ResNet architecture for video classification.
+- This model uses a X3D network architecture for video classification.
 - It includes augmentations and normalization specific to video data.
 """
 
@@ -15,6 +15,14 @@ from tqdm import tqdm
 import torch.nn.functional as F
 
 
+
+from torchvision.transforms import Compose, Lambda
+from torchvision.transforms._transforms_video import (
+    CenterCropVideo,
+    NormalizeVideo,
+)
+
+
 #Local imports
 from model.modules import BaseRGBModel, FCLayers, step
 
@@ -24,25 +32,21 @@ class Model(BaseRGBModel):
             super().__init__()
             self._feature_arch = args.feature_arch
 
-            # Replace 2D CNN with 3D ResNet (new code)
-            if self._feature_arch.startswith('3dresnet') or self._feature_arch.startswith('r3d_18'):
-                print('Using 3D ResNet-18')
-                self._features = torchvision.models.video.r3d_18(pretrained=True)
-            elif self._feature_arch.startswith('mc3_18'):
-                print('Using MC3-18')
-                self._features = torchvision.models.video.mc3_18(pretrained=True)
-            elif self._feature_arch.startswith('r2plus1d_18'):
-                print('Using R2Plus1D-18')
-                self._features = torchvision.models.video.r2plus1d_18(pretrained=True)
-            self._d = 512
-            
+            # Replace 2D CNN with X3D (new code)
+            if self._feature_arch.startswith('x3d_s'):
+                self._features = torch.hub.load('facebookresearch/pytorchvideo', 'x3d_s', pretrained=True)
+            elif self._feature_arch.startswith('x3d_m'):
+                print("Using X3D (M version)")
+                self._features = torch.hub.load('facebookresearch/pytorchvideo', 'x3d_m', pretrained=True)
+                
             # Keep spatial dimensions (new code)
-            self._features.fc = FCLayers(self._d, args.num_classes)
+            #print(f"block5: {self._features.blocks[5]}")
+            self._features.blocks[5].proj = torch.nn.Linear(self._features.blocks[5].proj.in_features, args.num_classes)
 
             # Update normalization for video models (critical change)
             self.standarization = T.Compose([
-                T.Normalize(mean = (0.43216, 0.394666, 0.37645), 
-                            std = (0.22803, 0.22145, 0.216989)) # Kinetics-400 stats
+                T.Normalize(mean = (0.45, 0.45, 0.45), 
+                            std = (0.225, 0.225, 0.225)) # Kinetics-400 stats
             ])
 
         def forward(self, x):

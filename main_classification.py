@@ -19,7 +19,7 @@ from tabulate import tabulate
 from util.io import load_json, store_json
 from util.eval_classification import evaluate
 from dataset.datasets import get_datasets
-from model.model_classification_3dr18 import Model
+from model.model_classification_x3d import Model
 
 
 def get_args():
@@ -49,6 +49,11 @@ def update_args(args, config):
     args.only_test = config['only_test']
     args.num_workers = config['num_workers']
     args.device = config['device']
+    
+    # Load additional arguments if they exist
+    args.loss = config['loss'] if 'loss' in config else None
+    args.gamma = config['gamma'] if 'gamma' in config else None
+    args.alpha = config['alpha'] if 'alpha' in config else None
 
     return args
 

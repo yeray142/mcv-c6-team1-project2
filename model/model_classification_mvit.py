@@ -1,7 +1,7 @@
 """
 File containing the main model.
 
-- This model uses a 3D ResNet architecture for video classification.
+- This model uses a MViT architecture for video classification.
 - It includes augmentations and normalization specific to video data.
 """
 
