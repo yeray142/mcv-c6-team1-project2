@@ -1,0 +1,22 @@
+{
+    "frame_dir": "/ghome/c5mcv01/mcv-c6-team1-project2/data/soccernetball/out_1_5_size/597x336",
+    "save_dir": "/ghome/c5mcv01/mcv-c6-team1-project2/data/soccernetball/SN-BAS-2025_savedata_resnet_imagesize_stride5",
+    "labels_dir": "/ghome/c5mcv01/mcv-c6-team1-project2/data/soccernetball/SN-BAS-2025",
+    "store_mode": "load",
+    "task": "classification",
+    "batch_size": 4,
+    "clip_len": 50,
+    "stride": 5,
+    "dataset": "soccernetball",
+    "epoch_num_frames": 500000,
+    "feature_arch": "3dresnet",
+    "learning_rate": 0.0008,
+    "num_classes": 12,
+    "num_epochs": 20,
+    "warm_up_epochs": 3,
+    "only_test": true,
+    "device": "cuda",
+    "num_workers": 4,
+    
+    "loss": "bce"
+}

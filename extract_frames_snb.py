@@ -20,8 +20,8 @@ python extract_frames_snb.py --video_dir video_dir
 # Constants
 FRAME_RETRY_THRESHOLD = 1000
 DEFAULT_SAMPLE_FPS = 25
-DEFAULT_HEIGHT = 224
-DEFAULT_WIDTH = 398
+DEFAULT_HEIGHT = 336 #224
+DEFAULT_WIDTH = 597 #398
 
 # Define global variables with height and width
 global height
