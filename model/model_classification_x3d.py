@@ -38,6 +38,12 @@ class Model(BaseRGBModel):
             elif self._feature_arch.startswith('x3d_m'):
                 print("Using X3D (M version)")
                 self._features = torch.hub.load('facebookresearch/pytorchvideo', 'x3d_m', pretrained=True)
+
+            # Wether to freeze or not the backbone
+            if args.freeze_backbone:
+                print("Freezing backbone")
+                for param in self._features.parameters():
+                    param.requires_grad = False
                 
             # Keep spatial dimensions (new code)
             #print(f"block5: {self._features.blocks[5]}")
@@ -100,6 +106,11 @@ class Model(BaseRGBModel):
         def print_stats(self):
             print('Model params:',
                 sum(p.numel() for p in self.parameters()))
+
+            # Print trainable parameters too
+            trainable_params = sum(p.numel() for p in self.parameters() if p.requires_grad)
+            total_params = sum(p.numel() for p in self.parameters())
+            print(f'Trainable parameters: {trainable_params:,} / {total_params:,} ({trainable_params/total_params:.2%})')
 
     def __init__(self, args=None):
         self.device = "cpu"

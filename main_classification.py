@@ -55,6 +55,10 @@ def update_args(args, config):
     args.loss = config['loss'] if 'loss' in config else None
     args.gamma = config['gamma'] if 'gamma' in config else None
     args.alpha = config['alpha'] if 'alpha' in config else None
+    args.lstm_layers = config["lstm_layers"] if "lstm_layers" in config else 1
+    args.weight_decay = config["weight_decay"] if "weight_decay" in config else 0.01
+    args.label_smooth = config["label_smooth"] if "label_smooth" in config else 0.0
+    args.freeze_backbone = config["freeze_backbone"] if "freeze_backbone" in config else False
 
     return args
 
@@ -114,7 +118,7 @@ def main(args):
     # Model
     model = Model(args=args)
 
-    optimizer, scaler = model.get_optimizer({'lr': args.learning_rate})
+    optimizer, scaler = model.get_optimizer({'lr': args.learning_rate, "weight_decay": args.weight_decay})
 
     if not args.only_test:
         # Warmup schedule

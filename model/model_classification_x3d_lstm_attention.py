@@ -39,12 +39,16 @@ class Model(BaseRGBModel):
             elif self._feature_arch.startswith('x3d_m'):
                 print("Using X3D (M version)")
                 self._features = torch.hub.load('facebookresearch/pytorchvideo', 'x3d_m', pretrained=True)
-                
-            # Keep spatial dimensions (new code)
+
+            # Wether to freeze or not the backbone
+            if args.freeze_backbone:
+                print("Freezing backbone")
+                for param in self._features.parameters():
+                    param.requires_grad = False
 
             # Add LSTM for temporal processing (similar to the second model)
             self._lstm = nn.LSTM(input_size=192, hidden_size=self._features.blocks[5].proj.in_features, 
-                                batch_first=True, num_layers=1, bidirectional=True)
+                                batch_first=True, num_layers=args.lstm_layers, bidirectional=True)
             lstm_out_dim = self._features.blocks[5].proj.in_features * 2  # because of bidirectionality
             
             # Add attention layer for better temporal modeling
@@ -138,6 +142,11 @@ class Model(BaseRGBModel):
             print('Model params:',
                 sum(p.numel() for p in self.parameters()))
 
+            # Print trainable parameters too
+            trainable_params = sum(p.numel() for p in self.parameters() if p.requires_grad)
+            total_params = sum(p.numel() for p in self.parameters())
+            print(f'Trainable parameters: {trainable_params:,} / {total_params:,} ({trainable_params/total_params:.2%})')
+
     def __init__(self, args=None):
         self.device = "cpu"
         if torch.cuda.is_available() and ("device" in args) and (args.device == "cuda"):
@@ -166,6 +175,9 @@ class Model(BaseRGBModel):
                 frame = batch['frame'].to(self.device).float()
                 label = batch['label']
                 label = label.to(self.device).float()
+
+                # Apply label smoothing
+                label = label * (1 - self._args.label_smooth) + self._args.label_smooth / self._args.num_classes
 
                 with torch.cuda.amp.autocast():
                     pred = self._model(frame)
